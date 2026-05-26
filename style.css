@@ -571,3 +571,25 @@ body {
     width: clamp(135px, 34vw, 185px);
   }
 }
+
+.card-container .tarot-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(-50%) !important;
+}
+
+.card-container .tarot-card:nth-child(1) {
+  left: 18% !important;
+}
+
+.card-container .tarot-card:nth-child(2) {
+  left: 39% !important;
+}
+
+.card-container .tarot-card:nth-child(3) {
+  left: 60% !important;
+}
+
+.card-container .tarot-card:nth-child(4) {
+  left: 81% !important;
+}

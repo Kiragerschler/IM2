@@ -25,7 +25,6 @@ shuffleBtn.addEventListener("click", async () => {
 
   shuffleBtn.disabled = true;
   shuffleBtn.textContent = "SHUFFLING...";
-
   cardContainer.innerHTML = "";
 
   try {
@@ -61,43 +60,39 @@ if (backBtn) {
 }
 
 async function fetchFourMajorCardsFromApi() {
-  const cards = [];
-  const usedNames = new Set();
-  let attempts = 0;
+  const response = await fetch(API_URL);
 
-  while (cards.length < 4 && attempts < 120) {
-    attempts++;
-
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("API Fehler");
-
-    const data = await response.json();
-    const apiCard = data.cards?.[0];
-
-    if (!apiCard) continue;
-    if (apiCard.type !== "major") continue;
-
-    const localCard = findLocalCard(apiCard.name);
-    if (!localCard) continue;
-
-    const localName = localCard.name;
-
-    if (usedNames.has(localName)) continue;
-    usedNames.add(localName);
-
-    cards.push({
-      name: apiCard.name,
-      meaning: apiCard.desc || "No description available.",
-      image: localCard.image,
-      funny: localCard.funny || "Uf guet Dütsch: Erklärung folgt."
-    });
+  if (!response.ok) {
+    throw new Error("API Fehler");
   }
 
-  if (cards.length < 4) {
+  const data = await response.json();
+
+  const apiCards = Array.isArray(data.cards) ? data.cards : [];
+
+  const majorCards = apiCards
+    .filter((apiCard) => apiCard.type === "major")
+    .map((apiCard) => {
+      const localCard = findLocalCard(apiCard.name);
+
+      if (!localCard) return null;
+
+      return {
+        name: apiCard.name,
+        meaning: apiCard.desc || "No description available.",
+        image: localCard.image,
+        funny: localCard.funny || "Uf guet Dütsch: Erklärung folgt."
+      };
+    })
+    .filter(Boolean);
+
+  if (majorCards.length < 4) {
     throw new Error("Nicht genug Major Karten gefunden.");
   }
 
-  return cards;
+  return majorCards
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
 }
 
 function findLocalCard(apiName) {
@@ -134,40 +129,30 @@ function createSmallCard(card) {
 }
 
 function getResponsiveCardPositions(cardCount) {
-  const containerWidth = cardContainer.offsetWidth;
   const firstCard = cardContainer.querySelector(".tarot-card");
   const cardWidth = firstCard ? firstCard.offsetWidth : 245;
   const cardHeight = firstCard ? firstCard.offsetHeight : 390;
 
-  const isSmall = window.innerWidth <= 820;
-
-  if (isSmall && cardCount === 4) {
-    const gap = Math.max(14, cardWidth * 0.12);
-    
-    const x = cardWidth / 2 + gap;
-    const y = cardHeight * 0.82;
+  if (window.innerWidth <= 820 && cardCount === 4) {
+    const gap = 14;
 
     return [
-      { x: -x, y: 0, rotate: -2 },
-      { x: x, y: 0, rotate: 1 },
-      { x: -x, y: y, rotate: -1 },
-      { x: x, y: y, rotate: 2 }
+      { x: -(cardWidth / 2 + gap / 2), y: 0, rotate: -2 },
+      { x: cardWidth / 2 + gap / 2, y: 0, rotate: 1 },
+      { x: -(cardWidth / 2 + gap / 2), y: cardHeight + gap, rotate: -1 },
+      { x: cardWidth / 2 + gap / 2, y: cardHeight + gap, rotate: 2 }
     ];
   }
 
-  const gap = Math.max(12, cardWidth * 0.12);
-  const x1 = cardWidth * 1.5 + gap * 1.5;
-  const x2 = cardWidth * 0.5 + gap * 0.5;
+  const gap = 18;
 
   return [
-    { x: -x1, y: 0, rotate: -2 },
-    { x: -x2, y: 0, rotate: 1 },
-    { x: x2, y: 0, rotate: -1 },
-    { x: x1, y: 0, rotate: 2 }
+    { x: -(cardWidth * 1.5 + gap), y: 0, rotate: -2 },
+    { x: -(cardWidth * 0.5 + gap / 3), y: 0, rotate: 1 },
+    { x: cardWidth * 0.5 + gap / 3, y: 0, rotate: -1 },
+    { x: cardWidth * 1.5 + gap, y: 0, rotate: 2 }
   ];
 }
-
-
 
 function dealCardsSmoothly() {
   const cards = [...document.querySelectorAll(".card-container .tarot-card")];
@@ -182,46 +167,26 @@ function dealCardsSmoothly() {
       [
         {
           opacity: 0,
-          transform: `
-            translate(-50%, -170px)
-            scale(0.68)
-            rotate(-8deg)
-          `
+          transform: `translate(-50%, -170px) scale(0.68) rotate(-8deg)`
         },
         {
           opacity: 1,
-          transform: `
-            translate(-50%, -95px)
-            scale(0.78)
-            rotate(6deg)
-          `,
+          transform: `translate(-50%, -95px) scale(0.78) rotate(6deg)`,
           offset: 0.18
         },
         {
           opacity: 1,
-          transform: `
-            translate(calc(-50% + ${target.x * 0.45}px), -35px)
-            scale(0.9)
-            rotate(${target.rotate * 2}deg)
-          `,
+          transform: `translate(calc(-50% + ${target.x * 0.45}px), -35px) scale(0.9) rotate(${target.rotate * 2}deg)`,
           offset: 0.45
         },
         {
           opacity: 1,
-          transform: `
-            translate(calc(-50% + ${target.x}px), 18px)
-            scale(1.03)
-            rotate(${target.rotate}deg)
-          `,
+          transform: `translate(calc(-50% + ${target.x}px), 18px) scale(1.03) rotate(${target.rotate}deg)`,
           offset: 0.82
         },
         {
           opacity: 1,
-          transform: `
-            translate(calc(-50% + ${target.x}px), ${target.y}px)
-            scale(1)
-            rotate(${target.rotate}deg)
-          `
+          transform: `translate(calc(-50% + ${target.x}px), ${target.y}px) scale(1) rotate(${target.rotate}deg)`
         }
       ],
       {
@@ -262,10 +227,3 @@ function showReading(card) {
 
   readingView.classList.remove("hidden");
 }
-
-window.addEventListener("resize", () => {
-  const cards = document.querySelectorAll(".card-container .tarot-card");
-
-  if (cards.length > 0 && !readingView.classList.contains("hidden")) return;
-  if (cards.length > 0) dealCardsSmoothly();
-});

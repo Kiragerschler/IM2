@@ -60,7 +60,7 @@ if (backBtn) {
 }
 
 async function fetchFourMajorCardsFromApi() {
-  const response = await fetch(API_URL);
+  const response = await fetch("https://tarotapi.dev/api/v1/cards");
 
   if (!response.ok) {
     throw new Error("API Fehler");
@@ -68,13 +68,10 @@ async function fetchFourMajorCardsFromApi() {
 
   const data = await response.json();
 
-  const apiCards = Array.isArray(data.cards) ? data.cards : [];
-
-  const majorCards = apiCards
+  const majorCards = data.cards
     .filter((apiCard) => apiCard.type === "major")
     .map((apiCard) => {
       const localCard = findLocalCard(apiCard.name);
-
       if (!localCard) return null;
 
       return {
@@ -85,10 +82,6 @@ async function fetchFourMajorCardsFromApi() {
       };
     })
     .filter(Boolean);
-
-  if (majorCards.length < 4) {
-    throw new Error("Nicht genug Major Karten gefunden.");
-  }
 
   return majorCards
     .sort(() => Math.random() - 0.5)
@@ -130,27 +123,32 @@ function createSmallCard(card) {
 
 function getResponsiveCardPositions(cardCount) {
   const firstCard = cardContainer.querySelector(".tarot-card");
+
   const cardWidth = firstCard ? firstCard.offsetWidth : 245;
   const cardHeight = firstCard ? firstCard.offsetHeight : 390;
+  const containerWidth = cardContainer.offsetWidth;
 
-  if (window.innerWidth <= 820 && cardCount === 4) {
-    const gap = 14;
+  const isTwoRows = containerWidth < cardWidth * 4.3;
+
+  if (isTwoRows && cardCount === 4) {
+    const gapX = Math.max(8, cardWidth * 0.08);
+    const gapY = Math.max(10, cardHeight * 0.04);
 
     return [
-      { x: -(cardWidth / 2 + gap / 2), y: 0, rotate: -2 },
-      { x: cardWidth / 2 + gap / 2, y: 0, rotate: 1 },
-      { x: -(cardWidth / 2 + gap / 2), y: cardHeight + gap, rotate: -1 },
-      { x: cardWidth / 2 + gap / 2, y: cardHeight + gap, rotate: 2 }
+      { x: -(cardWidth / 2 + gapX / 2), y: 0, rotate: -2 },
+      { x: cardWidth / 2 + gapX / 2, y: 0, rotate: 1 },
+      { x: -(cardWidth / 2 + gapX / 2), y: cardHeight + gapY, rotate: -1 },
+      { x: cardWidth / 2 + gapX / 2, y: cardHeight + gapY, rotate: 2 }
     ];
   }
 
-  const gap = 18;
+  const gap = Math.max(10, cardWidth * 0.08);
 
   return [
-    { x: -(cardWidth * 1.5 + gap), y: 0, rotate: -2 },
-    { x: -(cardWidth * 0.5 + gap / 3), y: 0, rotate: 1 },
-    { x: cardWidth * 0.5 + gap / 3, y: 0, rotate: -1 },
-    { x: cardWidth * 1.5 + gap, y: 0, rotate: 2 }
+    { x: -(cardWidth * 1.5 + gap * 1.5), y: 0, rotate: -2 },
+    { x: -(cardWidth * 0.5 + gap * 0.5), y: 0, rotate: 1 },
+    { x: cardWidth * 0.5 + gap * 0.5, y: 0, rotate: -1 },
+    { x: cardWidth * 1.5 + gap * 1.5, y: 0, rotate: 2 }
   ];
 }
 
@@ -167,22 +165,17 @@ function dealCardsSmoothly() {
       [
         {
           opacity: 0,
-          transform: `translate(-50%, -170px) scale(0.68) rotate(-8deg)`
+          transform: `translate(-50%, -220px) scale(0.65) rotate(-10deg)`
         },
         {
           opacity: 1,
-          transform: `translate(-50%, -95px) scale(0.78) rotate(6deg)`,
-          offset: 0.18
+          transform: `translate(-50%, -120px) scale(0.75) rotate(4deg)`,
+          offset: 0.22
         },
         {
           opacity: 1,
-          transform: `translate(calc(-50% + ${target.x * 0.45}px), -35px) scale(0.9) rotate(${target.rotate * 2}deg)`,
+          transform: `translate(-50%, -40px) scale(0.85) rotate(0deg)`,
           offset: 0.45
-        },
-        {
-          opacity: 1,
-          transform: `translate(calc(-50% + ${target.x}px), 18px) scale(1.03) rotate(${target.rotate}deg)`,
-          offset: 0.82
         },
         {
           opacity: 1,
@@ -190,14 +183,15 @@ function dealCardsSmoothly() {
         }
       ],
       {
-        duration: 1050,
-        delay: index * 90,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        duration: 900,
+        delay: index * 170,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
         fill: "forwards"
       }
     );
   });
 }
+
 
 function showReading(card) {
   if (!readingView) return;
@@ -227,3 +221,35 @@ function showReading(card) {
 
   readingView.classList.remove("hidden");
 }
+
+function updateCardPositionsInstantly() {
+  const cards = [...document.querySelectorAll(".card-container .tarot-card")];
+
+  if (cards.length === 0) return;
+  if (readingView && !readingView.classList.contains("hidden")) return;
+
+  const finalPositions = getResponsiveCardPositions(cards.length);
+
+  cards.forEach((card, index) => {
+    const target = finalPositions[index];
+
+    card.getAnimations().forEach((animation) => animation.cancel());
+
+    card.style.opacity = "1";
+    card.style.transform = `
+      translate(calc(-50% + ${target.x}px), ${target.y}px)
+      scale(1)
+      rotate(${target.rotate}deg)
+    `;
+  });
+}
+
+let resizeTimer;
+
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+
+  resizeTimer = setTimeout(() => {
+    updateCardPositionsInstantly();
+  }, 80);
+});

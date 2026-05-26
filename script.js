@@ -142,10 +142,10 @@ function getResponsiveCardPositions(cardCount) {
   const isSmall = window.innerWidth <= 820;
 
   if (isSmall && cardCount === 4) {
-    const gap = Math.max(14, cardWidth * 0.12);
-    
-    const x = cardWidth / 2 + gap;
-    const y = cardHeight * 0.82;
+    const gap = Math.max(12, cardWidth * 0.1);
+
+    const x = cardWidth / 2 + gap / 2;
+    const y = cardHeight * 0.88;
 
     return [
       { x: -x, y: 0, rotate: -2 },

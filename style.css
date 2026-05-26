@@ -439,6 +439,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(clamp(160px, 24vw, 245px), 1fr));
   justify-items: center;
   gap: clamp(60px, 8vw, 90px) clamp(36px, 6vw, 80px);
+  justify-content: center;
 }
 
 .gallery-card {

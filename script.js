@@ -61,43 +61,33 @@ if (backBtn) {
 }
 
 async function fetchFourMajorCardsFromApi() {
-  const cards = [];
-  const usedNames = new Set();
-  let attempts = 0;
+  const response = await fetch("https://tarotapi.dev/api/v1/cards");
 
-  while (cards.length < 4 && attempts < 120) {
-    attempts++;
-
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("API Fehler");
-
-    const data = await response.json();
-    const apiCard = data.cards?.[0];
-
-    if (!apiCard) continue;
-    if (apiCard.type !== "major") continue;
-
-    const localCard = findLocalCard(apiCard.name);
-    if (!localCard) continue;
-
-    const localName = localCard.name;
-
-    if (usedNames.has(localName)) continue;
-    usedNames.add(localName);
-
-    cards.push({
-      name: apiCard.name,
-      meaning: apiCard.desc || "No description available.",
-      image: localCard.image,
-      funny: localCard.funny || "Uf guet Dütsch: Erklärung folgt."
-    });
+  if (!response.ok) {
+    throw new Error("API Fehler");
   }
 
-  if (cards.length < 4) {
-    throw new Error("Nicht genug Major Karten gefunden.");
-  }
+  const data = await response.json();
 
-  return cards;
+  const majorCards = data.cards
+    .filter((apiCard) => apiCard.type === "major")
+    .map((apiCard) => {
+      const localCard = findLocalCard(apiCard.name);
+
+      if (!localCard) return null;
+
+      return {
+        name: apiCard.name,
+        meaning: apiCard.desc || "No description available.",
+        image: localCard.image,
+        funny: localCard.funny || "Uf guet Dütsch: Erklärung folgt."
+      };
+    })
+    .filter(Boolean);
+
+  return majorCards
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
 }
 
 function findLocalCard(apiName) {

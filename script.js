@@ -137,66 +137,37 @@ function getResponsiveCardPositions(cardCount) {
   const containerWidth = cardContainer.offsetWidth;
   const firstCard = cardContainer.querySelector(".tarot-card");
   const cardWidth = firstCard ? firstCard.offsetWidth : 245;
+  const cardHeight = firstCard ? firstCard.offsetHeight : 390;
 
-  const availableWidth = containerWidth - cardWidth;
-  const maxSpread = availableWidth / 2;
+  const isSmall = window.innerWidth <= 820;
 
-  const spread = Math.max(
-    cardWidth * 0.9,
-    Math.min(maxSpread / 1.5, cardWidth * 1.9)
-  );
+  if (isSmall && cardCount === 4) {
+    const gap = Math.max(8, cardWidth * 0.08);
 
-  if (cardCount === 4) {
+    const x = cardWidth / 2 + gap / 2;
+    const y = cardHeight * 0.82;
+
     return [
-      { x: -spread * 1.5, y: 0, rotate: -2 },
-      { x: -spread * 0.5, y: 0, rotate: 1 },
-      { x: spread * 0.5, y: 0, rotate: -1 },
-      { x: spread * 1.5, y: 0, rotate: 2 }
+      { x: -x, y: 0, rotate: -2 },
+      { x: x, y: 0, rotate: 1 },
+      { x: -x, y: y, rotate: -1 },
+      { x: x, y: y, rotate: 2 }
     ];
   }
 
-  return Array.from({ length: cardCount }, (_, index) => {
-    const center = (cardCount - 1) / 2;
-    return {
-      x: (index - center) * spread,
-      y: 0,
-      rotate: index % 2 === 0 ? -1.5 : 1.5
-    };
-  });
-}
-
-function getResponsiveCardPositions(cardCount) {
-  const containerWidth = cardContainer.offsetWidth;
-  const firstCard = cardContainer.querySelector(".tarot-card");
-  const cardWidth = firstCard ? firstCard.offsetWidth : 245;
-
-if (window.innerWidth <= 1000 && cardCount === 4) {
-  const x = Math.min(containerWidth * 0.2, cardWidth * 0.9);
-  const y = cardWidth * 1.35;
+  const gap = Math.max(12, cardWidth * 0.12);
+  const x1 = cardWidth * 1.5 + gap * 1.5;
+  const x2 = cardWidth * 0.5 + gap * 0.5;
 
   return [
-    { x: -x, y: 0, rotate: -2 },
-    { x: x, y: 0, rotate: 1 },
-    { x: -x, y: y, rotate: -1 },
-    { x: x, y: y, rotate: 2 }
+    { x: -x1, y: 0, rotate: -2 },
+    { x: -x2, y: 0, rotate: 1 },
+    { x: x2, y: 0, rotate: -1 },
+    { x: x1, y: 0, rotate: 2 }
   ];
 }
 
-  const availableWidth = containerWidth - cardWidth;
-  const maxSpread = availableWidth / 2;
 
-  const spread = Math.max(
-    cardWidth * 0.9,
-    Math.min(maxSpread / 1.5, cardWidth * 1.9)
-  );
-
-  return [
-    { x: -spread * 1.5, y: 0, rotate: -2 },
-    { x: -spread * 0.5, y: 0, rotate: 1 },
-    { x: spread * 0.5, y: 0, rotate: -1 },
-    { x: spread * 1.5, y: 0, rotate: 2 }
-  ];
-}
 
 function dealCardsSmoothly() {
   const cards = [...document.querySelectorAll(".card-container .tarot-card")];

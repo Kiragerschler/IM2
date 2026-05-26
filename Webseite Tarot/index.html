@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarot Shuffle</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/okj5jco.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <main class="page start-screen" id="page">
+      <div class="stars" aria-hidden="true">
+        <span class="star gold l" style="top: 4%; left: 4%">✦</span>
+        <span class="star gold m" style="top: 7%; left: 8%">✦</span>
+        <span class="star white m" style="top: 5%; left: 30%">✦</span>
+        <span class="star white s" style="top: 8%; left: 52%">✦</span>
+        <span class="star gold l" style="top: 10%; right: 12%">✦</span>
+        <span class="star white l" style="top: 22%; left: 5%">✦</span>
+        <span class="star gold m" style="top: 30%; left: 38%">✦</span>
+        <span class="star white s" style="top: 42%; left: 18%">✦</span>
+        <span class="star white s" style="top: 50%; left: 62%">✦</span>
+        <span class="star gold l" style="top: 38%; right: 18%">✦</span>
+        <span class="star white l" style="top: 56%; right: 6%">✦</span>
+        <span class="star gold m" style="top: 68%; left: 10%">✦</span>
+        <span class="star white m" style="top: 74%; left: 24%">✦</span>
+        <span class="star gold l" style="top: 82%; left: 44%">✦</span>
+        <span class="star white s" style="top: 72%; right: 28%">✦</span>
+        <span class="star gold l" style="bottom: 6%; right: 12%">✦</span>
+        <span class="star white l" style="bottom: 12%; right: 30%">✦</span>
+        <span class="star gold m" style="bottom: 3%; left: 6%">✦</span>
+        <span class="star white s" style="bottom: 18%; left: 48%">✦</span>
+      </div>
+
+      <header class="header">
+        <h1>Know your Future</h1>
+      </header>
+
+      <nav class="top-nav">
+        <a href="cards.html">GROSSES ARKANA</a>
+      </nav>
+
+      <button id="shuffleBtn">SHUFFLE</button>
+
+      <section id="cardContainer" class="card-container"></section>
+
+      <section id="readingView" class="reading-view hidden">
+        <button
+          id="backBtn"
+          class="back-btn"
+          aria-label="Zurück zur Kartenauswahl"
+        >
+          <span class="back-star big">✦</span>
+          <span class="back-star small one">✦</span>
+          <span class="back-star small two">✦</span>
+        </button>
+
+        <div class="selected-card-wrap" id="selectedCardWrap"></div>
+
+        <div class="meaning-box">
+          <h2 id="meaningTitle"></h2>
+          <p id="meaningText"></p>
+
+          <h3>ALSO UF GUET DÜTSCH GSEIT:</h3>
+          <p id="funnyText" class="funny-text"></p>
+        </div>
+      </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

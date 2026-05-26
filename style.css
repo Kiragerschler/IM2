@@ -531,3 +531,85 @@ body {
     min-height: 3600px;
   }
 }
+
+/* Kleine Desktop-/Tablet-Grösse: 4 Karten als 2x2 */
+
+@media (max-width: 1000px) {
+  .card-container {
+    width: min(92vw, 520px);
+    height: 520px;
+  }
+
+  .card-container .tarot-card {
+    width: clamp(135px, 28vw, 205px);
+  }
+
+  .card-container .tarot-card:nth-child(1) {
+    left: 30%;
+    top: 0;
+  }
+
+  .card-container .tarot-card:nth-child(2) {
+    left: 70%;
+    top: 0;
+  }
+
+  .card-container .tarot-card:nth-child(3) {
+    left: 30%;
+    top: 245px;
+  }
+
+  .card-container .tarot-card:nth-child(4) {
+    left: 70%;
+    top: 245px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .top-nav {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+  }
+
+  .top-nav a {
+    font-size: clamp(14px, 2.6vw, 22px);
+  }
+}
+
+  .top-nav a {
+    font-size: clamp(18px, 3vw, 24px);
+  }
+
+  .page.cards-screen #shuffleBtn {
+    margin: 42px auto 48px;
+  }
+
+  .card-container {
+    width: min(92vw, 560px);
+    height: 720px;
+  }
+
+  .card-container .tarot-card {
+    width: clamp(150px, 34vw, 230px);
+  }
+
+  .card-container .tarot-card:nth-child(1) {
+    left: 25%;
+    top: 0;
+  }
+
+  .card-container .tarot-card:nth-child(2) {
+    left: 75%;
+    top: 0;
+  }
+
+  .card-container .tarot-card:nth-child(3) {
+    left: 25%;
+    top: 360px;
+  }
+
+  .card-container .tarot-card:nth-child(4) {
+    left: 75%;
+    top: 360px;
+  }

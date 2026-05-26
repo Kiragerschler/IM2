@@ -165,6 +165,39 @@ function getResponsiveCardPositions(cardCount) {
   });
 }
 
+function getResponsiveCardPositions(cardCount) {
+  const containerWidth = cardContainer.offsetWidth;
+  const firstCard = cardContainer.querySelector(".tarot-card");
+  const cardWidth = firstCard ? firstCard.offsetWidth : 245;
+
+if (window.innerWidth <= 1000 && cardCount === 4) {
+  const x = Math.min(containerWidth * 0.2, cardWidth * 0.9);
+  const y = cardWidth * 1.35;
+
+  return [
+    { x: -x, y: 0, rotate: -2 },
+    { x: x, y: 0, rotate: 1 },
+    { x: -x, y: y, rotate: -1 },
+    { x: x, y: y, rotate: 2 }
+  ];
+}
+
+  const availableWidth = containerWidth - cardWidth;
+  const maxSpread = availableWidth / 2;
+
+  const spread = Math.max(
+    cardWidth * 0.9,
+    Math.min(maxSpread / 1.5, cardWidth * 1.9)
+  );
+
+  return [
+    { x: -spread * 1.5, y: 0, rotate: -2 },
+    { x: -spread * 0.5, y: 0, rotate: 1 },
+    { x: spread * 0.5, y: 0, rotate: -1 },
+    { x: spread * 1.5, y: 0, rotate: 2 }
+  ];
+}
+
 function dealCardsSmoothly() {
   const cards = [...document.querySelectorAll(".card-container .tarot-card")];
   const finalPositions = getResponsiveCardPositions(cards.length);

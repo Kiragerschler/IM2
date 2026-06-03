@@ -40,7 +40,3 @@ Für die Umsetzung und Problemlösung während des Projekts haben wir auf folgen
 - **KI-Assistenz:** Gemini und Claude (als Unterstützung beim Erarbeiten der Logik, Debugging).
 - **Mentoring:** Wertvolle Coachings und Feedback-Gespräche bei den Dozenten.
 - **Infrastruktur:** Das bereitgestellte Tooling Setup aus dem Modul IM II, welches uns eine solide Basis für das Projekt lieferte.
-
-## Known Bugs
-
-- [Hier eintragen, falls z.B. die Seite auf dem Smartphone noch nicht gut aussieht oder man zu schnell auf Karten klicken kann, bevor sie fertig gemischt sind]
